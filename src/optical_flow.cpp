@@ -56,6 +56,7 @@ int main( int argc, char* argv[])
 
     Mat frame1, prvs;
     frame1 = imread(filename[0]);
+    cout << "Image size: " << frame1.rows << "X" << frame1.cols << endl;
     cvtColor(frame1, prvs, COLOR_BGR2GRAY);
 
     for (int i = 1; i < count; i++){
