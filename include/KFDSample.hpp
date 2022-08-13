@@ -3,6 +3,8 @@
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+// #include <string>
+#include <iostream>
 
 using namespace cv;
 using namespace std;
@@ -29,14 +31,27 @@ private:
     
 
 public:
-    KFDSample(/* args */);
+    // Constructor Initialization
+    KFDSample( int nfeatures, int nlevels, int iniThFAST, int minThFAST, Mat &Frame, float TimeStamp);
+    // Destructor
     ~KFDSample();
 };
 
-KFDSample::KFDSample(/* args */)
+KFDSample::KFDSample(int nfeatures, int nlevels, int iniThFAST, int minThFAST, Mat &Frame, float TimeStamp)
 {
+    this->nfeatures = nfeatures;
+    this->minThFAST = minThFAST;
+    this->nlevels = nlevels;
+    this->iniThFAST = iniThFAST;
+    this->scaleFactor = scaleFactor;
+    this->mpORBextractor = new ORB_SLAM2::ORBextractor(nfeatures, 
+    scaleFactor, nlevels, iniThFAST, minThFAST);
+    cout << endl  << "ORB Extractor Parameters: " << endl;
+    cout << "- Number of Features: " << nfeatures << endl;
+    cout << "- Scale Levels: " << nlevels << endl;
+    cout << "- Scale Factor: " << scaleFactor << endl;
+    cout << "- Initial Fast Threshold: " << iniThFAST << endl;
+    cout << "- Minimum Fast Threshold: " << minThFAST << endl;
 }
 
-// KFDSample::~KFDSample()
-// {
-// }
+void InitORBextractor(const int nfeatures, const float scaleFactor, const int nlevels, const int iniThFAST, const int minThFAST);
