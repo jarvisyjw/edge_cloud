@@ -16,11 +16,14 @@ private:
     int nfeatures = 2000, nlevels = 8, iniThFAST = 20, minThFAST = 7;
     // Tracking points
     vector<Point2f> old, next;
-
-    
+    // Last Frame
+    Mat mLastFrame, mLastFrameGray;
+    // Last Timestamp
+    float mLastT;
 
 public:
-    KFDSample(/* args */);
+    KFDSample( int nfeatures, int nlevels, int iniThFAST, int minThFAST, Mat &Frame, float TimeStamp);
+
     ~KFDSample();
 };
 
