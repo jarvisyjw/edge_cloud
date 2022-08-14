@@ -21,6 +21,8 @@ private:
     // ORBextractor Parameters Default for TUM1 Dataset
     float scaleFactor = 1.2;
     int nfeatures = 2000, nlevels = 8, iniThFAST = 20, minThFAST = 7;
+    // PD Controller Param
+    float Kp = 1, Kd = 0;
     // Tracking Keypoints and Descriptors
     vector<KeyPoint> mvKeys;
     Mat mDescriptors;
@@ -53,8 +55,13 @@ public:
     }
     // Init PD keyframe select controller
     void InitPDKFselector(float Kp, float Kd){
-        
+        this->mpPDcontroller = new PD::PD(Kp, Kd);
+        Printinfo(Kp, Kd);
     }
+    void InitPDKFselector(){
+        this->mpPDcontroller = new PD::PD(this->Kp, this->Kd);
+    }
+
     // Set Initial Frame
     void SetInitialFrame(const Mat &InputArray){
         this->frame1 = InputArray;
@@ -71,9 +78,9 @@ public:
     // Select Good points After tracking
     void SelectGoodPts(){
     for(uint i = 0; i < this->old.size(); i++)
-                {
-                    if(this->status[i] == 1) {
-                        this->good_next.push_back(this->next[i]);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+    {
+                if(this->status[i] == 1) {
+                        this->good_next.push_back(this->next[i]);
                         this->good_old.push_back(this->old[i]);
                     }
                 }
@@ -91,15 +98,12 @@ public:
         cout.precision(5);
         cout << "Num of Good Points:" << nkpt << endl;
         Calmoptflmag(this->good_old, this->good_next, nkpt);
-        float tempN = moptf;
-        float pd = mpPDcontroller.update(tempN, tframe-ltframe);
-        float TH = tempN + pd;
+        float vmOptflow = this->moptf;
+        float vPDKFth = mpPDcontroller.update(vmOptflow, timeStamp - this->ltframe);
+        float TH = vmOptflow + vPDKFth;
         cout << "PD Output: " << pd << endl;
         cout << "Select Threshold: " << TH << endl;
-        ltframe = tframe;
-
-
-        
+        this->ltframe = timeStamp;
     }   
     
 };
@@ -142,6 +146,12 @@ float Calmoptflmag(vector<Point2f> prvs, vector<Point2f> next, const int nkpt){
     // cout.precision(4);
     // cout << "Magnitude of Optical flow:" << moptf << endl;
     return moptf;
+}
+
+void Printinfo (float Kp, float Kd){
+        cout << endl  << "KeyFrame PD Selector Parameters: " << endl;
+        cout << "- Kp: " << Kp << endl;
+        cout << "- Kd: " << Kd << endl;
 }
 
 
