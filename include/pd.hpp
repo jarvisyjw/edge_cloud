@@ -18,7 +18,7 @@ class PD {
 
     /// Update the controller: given the current position, compute the control
     /// action.
-    float update(float input, float Ts) {
+    float update(float input, double Ts) {
         // The error is the difference between the reference (setpoint) and the
         // actual position (input)
         float error = setpoint - input;

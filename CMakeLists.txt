@@ -37,7 +37,10 @@ src/ORBextractor.cc
 
 # Declare the executable target built from your sources
 add_executable(cal_optical_flow src/optical_flow.cpp)
+add_executable(main src/main.cpp)
 
 # Link your application with OpenCV libraries
 target_link_libraries(cal_optical_flow PRIVATE ${OpenCV_LIBS}
+${PROJECT_NAME})
+target_link_libraries(main PRIVATE ${OpenCV_LIBS}
 ${PROJECT_NAME})

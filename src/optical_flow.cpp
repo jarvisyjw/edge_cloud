@@ -21,6 +21,7 @@ int main( int argc, char* argv[])
     // create PD controller
     PD keyselect = PD(0.8,0.08);
     keyselect.setSetpoint(N);
+    int nImg = 0;
     // Start the Loop, in LoadImages, the first image is retrived and saved (Optional)
     // If Sparse, extract keypoints and descriptor from the first image
     if (!dense){
@@ -57,10 +58,11 @@ int main( int argc, char* argv[])
             cout << "Magnitude of Mean Optical flow:" << moptf << endl;
             // Visualization
             if (show){
-                // Mat nkeypointstemp;
-                // drawKeypoints(imprvs,mvKeys,keypointstemp,Scalar::all(-1),DrawMatchesFlags::DEFAULT);
-                imshow("Prvs",imprvs);
-                imshow("Next", imnext);
+                Mat nkeypointstemp;
+                drawKeypoints(imprvs,mvKeys,nkeypointstemp,Scalar::all(-1),DrawMatchesFlags::DEFAULT);
+                imshow("ORB Feature", nkeypointstemp);
+                // imshow("Prvs",imprvs);
+                // imshow("Next", imnext);
                 waitKey(20);
             }
             // Save Image
@@ -111,8 +113,9 @@ int main( int argc, char* argv[])
 
                 if (moptf > TH){
                     //extract new features
+                    nImg++;
                     cout << "New Frame Extracted" << endl;
-                    (*mpORBextractor)(imprvs,cv::Mat(),mvKeys,mDescriptors);
+                    (*mpORBextractor)(imnext,cv::Mat(),mvKeys,mDescriptors);
                     KeyPoint::convert(mvKeys,p0);
                     if(save){
                         SaveImages(outpath, vstrImageFilenames[ni], frame2);
@@ -130,6 +133,7 @@ int main( int argc, char* argv[])
     }
     double average_time = total_time / nImages ;
     cout << "Average excution time of algorithm is " << average_time << "ms." << endl;
+    cout << "Total Selected Keyframes is " << nImg << endl;
 }
 
 // Adopted from ORB-SLAM2
