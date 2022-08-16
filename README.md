@@ -8,7 +8,7 @@
 ### reference usage:
 As shown in `main.cpp`
     
-```c_cpp
+```c
 
 // construct a object
 KFDSample kfd = KFDSample(nfeatures, nlevels, iniThFAST, minThFAST, scaleFactor, frame1, vTimestamps[0]);
