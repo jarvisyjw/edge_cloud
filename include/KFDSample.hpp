@@ -44,7 +44,10 @@ private:
     vector<uchar> status;
     vector<float> err;
     TermCriteria criteria = TermCriteria((TermCriteria::COUNT) + (TermCriteria::EPS), 20, 0.03);
-    
+    // Display
+    bool show = false;
+    // keyframe Set
+    vector<Mat> KFset;
     
 
 public:
@@ -69,10 +72,23 @@ public:
         this->mpPDcontroller->setSetpoint(this->th);
     }
 
+    Mat GetKF(){
+        Mat KF = KFset.back();
+        return KF;
+    }
+    vector<Mat> GetAllKF(){
+        vector<Mat> allKF = KFset;
+        return allKF;
+    }
+
 
     // set threshold
     void SetThreshold(const float TH){
         this->th = TH;
+    }
+
+    void SetDisplay(){
+        this->show = true;
     }
 
     // Set Initial Frame
@@ -81,10 +97,13 @@ public:
         cvtColor(this->frame1, this->imprvs, CV_BGR2GRAY);
         this->mpORBextractor->operator()(this->imprvs,cv::Mat(),this->mvKeys,this->mDescriptors);
         KeyPoint::convert(mvKeys,this->old);
+        KFset.push_back(frame1);
+        if (this->show){
         Mat nkeypointstemp;
         drawKeypoints(imprvs,mvKeys,nkeypointstemp,Scalar::all(-1),DrawMatchesFlags::DEFAULT);
         imshow("ORB Festure", nkeypointstemp);
         waitKey(10);
+        }
     }
     // Input Frame
     void SetNextFrame(const Mat &InputArray){
@@ -130,10 +149,15 @@ public:
             cout << "New Keyframe Selected" << endl;
             this->mpORBextractor->operator()(this->imnext,cv::Mat(),this->mvKeys,this->mDescriptors);
             KeyPoint::convert(mvKeys, this->old);
-            // Mat nkeypointstemp;
-            // drawKeypoints(imprvs,mvKeys,nkeypointstemp,Scalar::all(-1),DrawMatchesFlags::DEFAULT);
-            // imshow("ORB Festure", nkeypointstemp);
-            // waitKey(10);
+            KFset.push_back(frame2);
+            if (this->show){
+                vector<KeyPoint> keys;
+                Mat keypointstemp;
+                KeyPoint::convert(good_next, keys);
+                drawKeypoints(imnext,keys,keypointstemp,Scalar::all(-1),DrawMatchesFlags::DEFAULT);
+                imshow("ORB Keypoints",keypointstemp);
+                waitKey(10);
+                }
         }
         else{
             this->old = this->next;
