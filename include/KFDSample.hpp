@@ -126,6 +126,11 @@ public:
 
     // Calculate Mean Optical FLOW
     void CalcMOptFLOW(const Mat &inputIm, double timeStamp){
+        if(this->old.empty()){
+            // if first Frame, Initialize
+            this->SetInitialFrame(inputIm);
+            this->ltframe = timeStamp;
+        }
         this->SetNextFrame(inputIm);
         imshow("frame1", this->imprvs);
         imshow("frame2", this->imnext);
@@ -171,6 +176,9 @@ public:
     
 };
 
+
+
+
 KFDSample::KFDSample(int nfeatures, int nlevels, int iniThFAST, int minThFAST, float scaleFactor, Mat &Frame, float TimeStamp)
 {
     // Initialize
@@ -181,12 +189,13 @@ KFDSample::KFDSample(int nfeatures, int nlevels, int iniThFAST, int minThFAST, f
     this->scaleFactor = scaleFactor;
     this->InitORBextractor(this->nfeatures,this->scaleFactor,this->nlevels,this->iniThFAST,this->minThFAST);
     this->SetInitialFrame(Frame);
-    // this->frame1 = Frame;
     this->ltframe = TimeStamp;
+    this->InitPDKFselector(this->Kp,this->Kd, this->th);
 }
 
 KFDSample::KFDSample(){
-    InitORBextractor(this->nfeatures,this->scaleFactor,this->nlevels,this->iniThFAST,this->minThFAST);
+    this->InitPDKFselector(this->Kp, this->Kd, this->th);
+    this->InitORBextractor(this->nfeatures,this->scaleFactor,this->nlevels,this->iniThFAST,this->minThFAST);
 }
 
 // Print ORBextractor
