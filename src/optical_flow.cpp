@@ -104,14 +104,14 @@ int main( int argc, char* argv[])
                 }
 
                 // Thresholding
-                float tempN = moptf;
-                float pd = keyselect.update(tempN, tframe-ltframe);
-                float TH = tempN + pd;
-                cout << "PD Output: " << pd << endl;
-                cout << "Select Threshold: " << TH << endl;
-                ltframe = tframe;
+                // float tempN = moptf;
+                // float pd = keyselect.update(tempN, tframe-ltframe);
+                // float TH = tempN + pd;
+                // cout << "PD Output: " << pd << endl;
+                // cout << "Select Threshold: " << TH << endl;
+                // ltframe = tframe;
 
-                if (moptf > TH){
+                if (moptf > N){
                     //extract new features
                     nImg++;
                     cout << "New Frame Extracted" << endl;
