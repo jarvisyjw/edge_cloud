@@ -28,6 +28,7 @@ vector<double> vTimestamps;
 string inpath, outpath;
 // CMD Argument
 bool dense, save, show;
+bool kf=false;
 // Total Num of Images, num of keypoints
 int nImages;
 // mean optical flow of images and threshold N
@@ -57,24 +58,25 @@ int main( int argc, char* argv[]){
     kfd.InitPDKFselector(0.8, 0.01, N);
     kfd.SetThreshold(N);
     // start the loop
+    if (show){
     kfd.SetDisplay();
+    }
 
     for (uint i = 1; i < nImages; i++){
         Mat nextframe;
         double t = vTimestamps[i];
         ReadImages(vstrImageFilenames[i],nextframe);
-
         if (nextframe.empty()){
             break;
         }
-        kfd.CalcMOptFLOW(nextframe, t);
-        Mat lastkf = kfd.GetKF();
-        imshow("last kf", lastkf);
-        waitKey(20);
+        if (kfd.CalcMOptFLOW(nextframe, t)){
+            if(save){
+                SaveImages(outpath, vstrImageFilenames[i],nextframe);
+            }
+        }
+        vector<Mat> allkf = kfd.GetAllKF();
+        cout << "number of keyframes"<<allkf.size() << endl;
     }
-    
-
-
     // return 0;
     // delete []kfd;
 }

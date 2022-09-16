@@ -111,7 +111,7 @@ int main( int argc, char* argv[])
                 // cout << "Select Threshold: " << TH << endl;
                 // ltframe = tframe;
 
-                if (moptf > N){
+                if (moptf > N || nkpt < 20){
                     //extract new features
                     nImg++;
                     cout << "New Frame Extracted" << endl;
